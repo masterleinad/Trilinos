@@ -4740,7 +4740,7 @@ namespace Tpetra {
 #ifdef HAVE_TPETRA_MMM_TIMINGS
     MM = Teuchos::rcp(new TimeMonitor(*TimeMonitor::getNewTimer(prefix + std::string("ESFC-M-cGC"))));
 #endif
-    if(params.is_null() || params->get("compute global constants",true))
+    if(params.is_null() || params->get("compute global constants",false))
       computeGlobalConstants ();
 
 #ifdef HAVE_TPETRA_MMM_TIMINGS
@@ -8783,15 +8783,12 @@ namespace Tpetra {
  
 #ifdef HAVE_TPETRA_MMM_TIMINGS
     MM = Teuchos::rcp(new TimeMonitor(*TimeMonitor::getNewTimer(prefix + std::string("TAFC ESFC"))));
-
     esfc_params.set("Timer Label",prefix + std::string("TAFC"));
 #endif
     if(!params.is_null())
-      esfc_params.set("compute global constants",params->get("compute global constants",true));
+      esfc_params.set("compute global constants",params->get("compute global constants",false));
 
-
-    if(false) {
-//    if( isMM && !MyImporter.is_null()) {
+   if( isMM && !MyImporter.is_null()) {
 
 #ifdef HAVE_TPETRA_MMM_TIMINGS
     MM = Teuchos::rcp(new TimeMonitor(*TimeMonitor::getNewTimer(prefix + std::string("is MM Block"))));
@@ -8828,7 +8825,7 @@ namespace Tpetra {
         }
       }
     
-      const ArrayView<const GO> const_fullRemoteGIDs(fullRemoteGIDs); // gotta be a better way
+      const ArrayView<const GO> const_fullRemoteGIDs = fullRemoteGIDs; // gotta be a better way
 
       {
 #ifdef HAVE_TPETRA_MMM_TIMINGS
@@ -8934,6 +8931,9 @@ namespace Tpetra {
       
       if(true) 
         {  // Seifert sort, or CBL sort.
+#ifdef HAVE_TPETRA_MMM_TIMINGS
+        auto CSMM = Teuchos::rcp(new TimeMonitor(*TimeMonitor::getNewTimer(prefix + std::string("SeifertSort"))));
+#endif
           while(i1 < Len1 || i2 < Len2 || i3 < Len3){
             int PID1 = (i1<Len1)?(EPID1[i1]):InfPID;
             int PID2 = (i2<Len2)?(EPID2[i2]):InfPID;
@@ -8993,6 +8993,9 @@ namespace Tpetra {
         }
         else // do  cbl sort
           { 
+#ifdef HAVE_TPETRA_MMM_TIMINGS
+        auto CLMM = Teuchos::rcp(new TimeMonitor(*TimeMonitor::getNewTimer(prefix + std::string("LuchiniSort"))));
+#endif
             typedef std::tuple<int,GO,LO> pgl_t;
             std::vector< pgl_t > mms;
         
@@ -9012,7 +9015,6 @@ namespace Tpetra {
             std::vector<pgl_t> vs;
             vs.reserve(mms.size());
 
-            //            bool ever=false;
             for( auto && me : mms) {
               GO gid;               LO lid;               int pid;
               std::tie(pid,gid,lid) = me;
@@ -9030,9 +9032,10 @@ namespace Tpetra {
             // The default comparitor for std::pair sorts on .first, then .second. 
             // Which, if .second is a pair of <global,local> will give us exactly what is needed. 
             // Note we want the LID's in GID order. 
-            std::sort(vs.begin(),vs.end());
-            auto newEndOfPairs = std::unique(vs.begin(), vs.end());
-            vs.erase(newEndOfPairs,vs.end());
+	    // This isort is not needed. (?)
+            // std::sort(vs.begin(),vs.end());
+            // auto newEndOfPairs = std::unique(vs.begin(), vs.end());
+            // vs.erase(newEndOfPairs,vs.end());
             for(auto && p : vs ) {
               GO gid;               LO lid;               int pid;
               std::tie(pid,gid,lid) = p;
@@ -9042,6 +9045,10 @@ namespace Tpetra {
             }
           } // cbl sort
 
+      {
+#ifdef HAVE_TPETRA_MMM_TIMINGS
+        auto OIMM = Teuchos::rcp(new TimeMonitor(*TimeMonitor::getNewTimer(prefix + std::string("CrsM-tafc 2mapCtrUser"))));
+#endif
           MyImport = rcp ( new import_type (MyDomainMap,
                                             MyColMap,
                                             RemotePids,
@@ -9049,6 +9056,7 @@ namespace Tpetra {
                                             userExportPIDs().getConst(),
                                             plist) 
                                            );
+      }
     }  // if(isMM)
 
     destMat->expertStaticFillComplete (MyDomainMap, MyRangeMap, MyImport,Teuchos::null,rcp(&esfc_params,false));
