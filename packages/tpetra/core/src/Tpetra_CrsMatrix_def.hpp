@@ -8879,7 +8879,7 @@ namespace Tpetra {
 		    }
 		}
 	    }
-// This sort can not be omitted. 
+// This sort can _not_ be omitted. 
 	    std::sort(usrtg.begin(),usrtg.end()); // default comparator does the right thing, now sorted in gid order  
 	    auto eopg = std ::unique(usrtg.begin(),usrtg.end());
 	    usrtg.erase(eopg,usrtg.end());
@@ -8933,7 +8933,7 @@ namespace Tpetra {
             GO  MIN_GID = MIN3( ((PID1==MIN_PID)?GID1:InfGID), ((PID2==MIN_PID)?GID2:InfGID), ((PID3==MIN_PID)?GID3:InfGID));
             bool added_entry=false;
 
-            bool dumpit = false;
+//            bool dumpit = false;
 
 	    // testing no filtering of fromRemoteGID's
             // if(true) {
@@ -8944,11 +8944,11 @@ namespace Tpetra {
 
             // Case 1: Add off list 1
             if(PID1 == MIN_PID && GID1 == MIN_GID){
-		if(!dumpit) {
+//		if(!dumpit) {
 		    userExportLIDs.push_back(ELID1[i1]);
 		    userExportPIDs.push_back(EPID1[i1]);
 		    userExportGIDs.push_back(MIN_GID);
-		}
+//		}
 		i1++;
 		added_entry=true;
             }
@@ -8956,11 +8956,11 @@ namespace Tpetra {
             // Case 2: Add off list 2
             if(PID2 == MIN_PID && GID2 == MIN_GID){
 		if(!added_entry) {
-		    if(!dumpit) {
+//		    if(!dumpit) {
 			userExportLIDs.push_back(ELID2[i2]);
 			userExportPIDs.push_back(EPID2[i2]);
 			userExportGIDs.push_back(MIN_GID);
-		    }
+//		    }
 		    added_entry=true;
 		}
 		i2++;
@@ -8969,11 +8969,11 @@ namespace Tpetra {
             // Case 3: Add off list 3 
 	    if(PID3 == MIN_PID && GID3 == MIN_GID){
 		if(!added_entry) {
-		    if(!dumpit) {
+//		    if(!dumpit) {
 			userExportLIDs.push_back(ELID3[i3]);
 			userExportPIDs.push_back(EPID3[i3]);
 			userExportGIDs.push_back(MIN_GID);
-		    }
+//		    }
 		}
 		i3++;
             }
@@ -8987,7 +8987,7 @@ namespace Tpetra {
 #endif
 
 	    Teuchos::RCP<Teuchos::ParameterList> plist = rcp(new Teuchos::ParameterList());
-	    plist->set ("Debug", true);
+	    // plist->set ("Debug", true);
 
 	    MyImport = rcp ( new import_type (MyDomainMap,
 					      MyColMap,
