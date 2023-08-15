@@ -701,7 +701,7 @@ void KernelWrappers2<Scalar,LocalOrdinal,GlobalOrdinal,Tpetra::KokkosCompat::Kok
   if(debug) {
 
     auto rowMap = Aview.origMatrix->getRowMap();
-    Tpetra::Vector<Scalar> diags(rowMap);
+    Tpetra::Vector<Scalar, LocalOrdinal, GlobalOrdinal, Tpetra::KokkosCompat::KokkosSYCLWrapperNode> diags(rowMap);
     Aview.origMatrix->getLocalDiagCopy(diags);
     size_t diagLength = rowMap->getLocalNumElements();
     Teuchos::Array<Scalar> diagonal(diagLength);
