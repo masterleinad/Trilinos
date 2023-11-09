@@ -102,19 +102,21 @@ namespace GMLS_LinearAlgebra {
       if (do_print) {
         Kokkos::single(Kokkos::PerTeam(member), [&] () {
           //print a
-          printf("a=zeros(%lu,%lu);\n", aa.extent(0), aa.extent(1));
+#if KOKKOS_VERSION >= 40200
+	  Kokkos::printf("a=zeros(%lu,%lu);\n", aa.extent(0), aa.extent(1));
               for (size_t i=0; i<aa.extent(0); ++i) {
                   for (size_t j=0; j<aa.extent(1); ++j) {
-                      printf("a(%lu,%lu)= %f;\n", i+1,j+1, aa(i,j));
+			Kokkos::printf("a(%lu,%lu)= %f;\n", i+1,j+1, aa(i,j));
                   }
               }
           //print b
-          printf("b=zeros(%lu,%lu);\n", bb.extent(0), bb.extent(1));
+	  Kokkos::printf("b=zeros(%lu,%lu);\n", bb.extent(0), bb.extent(1));
               for (size_t i=0; i<bb.extent(0); ++i) {
                   for (size_t j=0; j<bb.extent(1); ++j) {
-                      printf("b(%lu,%lu)= %f;\n", i+1,j+1, bb(i,j));
+			Kokkos::printf("b(%lu,%lu)= %f;\n", i+1,j+1, bb(i,j));
                   }
               }
+#endif
         });
       }
       do_print = false;
@@ -132,14 +134,16 @@ namespace GMLS_LinearAlgebra {
 
       if (do_print) {
         Kokkos::single(Kokkos::PerTeam(member), [&] () {
-        printf("matrix_rank: %d\n", matrix_rank);
+#if KOKKOS_VERSION >= 40200
+	Kokkos::printf("matrix_rank: %d\n", matrix_rank);
         //print u
-        printf("u=zeros(%lu,%lu);\n", uu.extent(0), uu.extent(1));
+	Kokkos::printf("u=zeros(%lu,%lu);\n", uu.extent(0), uu.extent(1));
         for (size_t i=0; i<uu.extent(0); ++i) {
             for (size_t j=0; j<uu.extent(1); ++j) {
-                printf("u(%lu,%lu)= %f;\n", i+1,j+1, uu(i,j));
+	    	Kokkos::printf("u(%lu,%lu)= %f;\n", i+1,j+1, uu(i,j));
             }
         }
+#endif
         });
       }
       TeamVectorSolveUTVCompadre<MemberType,AlgoTagType>

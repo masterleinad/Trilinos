@@ -54,17 +54,19 @@ namespace KokkosBatched {
         bool do_print = false;
         if (do_print) {
             Kokkos::single(Kokkos::PerTeam(member), [&] () {
-                printf("size is: %d %d %d %d\n", matrix_rank, m, n, nrhs); 
-                printf("U, us1, us0: %d %d\n", us1, us0);
-                printf("T, ts0, ts1: %d %d\n", ts0, ts1);
-                printf("B, bs0, bs1: %d %d\n", bs0, bs1);
-                printf("W, ws0, ws1: %d %d\n", ws0, ws1);
-                printf("B=zeros(%d,%d);\n", m, nrhs);
+#if KOKKOS_VERSION >= 40200
+		Kokkos::printf("size is: %d %d %d %d\n", matrix_rank, m, n, nrhs); 
+		Kokkos::printf("U, us1, us0: %d %d\n", us1, us0);
+		Kokkos::printf("T, ts0, ts1: %d %d\n", ts0, ts1);
+		Kokkos::printf("B, bs0, bs1: %d %d\n", bs0, bs1);
+		Kokkos::printf("W, ws0, ws1: %d %d\n", ws0, ws1);
+		Kokkos::printf("B=zeros(%d,%d);\n", m, nrhs);
                 for (int i=0; i<m; ++i) {
                     for (int j=0; j<nrhs; ++j) {
-                        printf("B(%d,%d)= %f;\n", i+1,j+1,B[i*bs0+j*bs1]);
+		    	Kokkos::printf("B(%d,%d)= %f;\n", i+1,j+1,B[i*bs0+j*bs1]);
                     }
                 }
+#endif
             });
         }
     
@@ -99,18 +101,20 @@ namespace KokkosBatched {
     
             if (do_print) {
                 Kokkos::single(Kokkos::PerTeam(member), [&] () {
-                    printf("W=zeros(%d,%d);\n", m, nrhs);
+#if KOKKOS_VERSION >= 40200
+		    Kokkos::printf("W=zeros(%d,%d);\n", m, nrhs);
                     for (int i=0; i<m; ++i) {
                         for (int j=0; j<nrhs; ++j) {
-                            printf("W(%d,%d)= %f;\n", i+1,j+1,W[i*ws0+j]);
+				Kokkos::printf("W(%d,%d)= %f;\n", i+1,j+1,W[i*ws0+j]);
                         }
                     }
-                      printf("B=zeros(%d,%d);\n", m, nrhs);
+		    Kokkos::printf("B=zeros(%d,%d);\n", m, nrhs);
                     for (int i=0; i<m; ++i) {
                         for (int j=0; j<nrhs; ++j) {
-                            printf("B(%d,%d)= %f;\n", i+1,j+1,B[i*bs0+j]);
+				Kokkos::printf("B(%d,%d)= %f;\n", i+1,j+1,B[i*bs0+j]);
                         }
                     }
+#endif
                 });
             }
     
@@ -126,12 +130,14 @@ namespace KokkosBatched {
     
             if (do_print) {
                 Kokkos::single(Kokkos::PerTeam(member), [&] () {
-                    printf("W=zeros(%d,%d);\n", m, nrhs);
+#if KOKKOS_VERSION >= 40200
+		    Kokkos::printf("W=zeros(%d,%d);\n", m, nrhs);
                     for (int i=0; i<m; ++i) {
                         for (int j=0; j<nrhs; ++j) {
-                            printf("W(%d,%d)= %f;\n", i+1,j+1,W[i*ws0+j]);
+			  Kokkos::printf("W(%d,%d)= %f;\n", i+1,j+1,W[i*ws0+j]);
                         }
                     }
+#endif
                 });
             }
             
@@ -148,12 +154,14 @@ namespace KokkosBatched {
     
             if (do_print) {
                 Kokkos::single(Kokkos::PerTeam(member), [&] () {
-                    printf("X=zeros(%d,%d);\n", n, nrhs);
+#if KOKKOS_VERSION >= 40200
+		    Kokkos::printf("X=zeros(%d,%d);\n", n, nrhs);
                     for (int i=0; i<n; ++i) {
                         for (int j=0; j<nrhs; ++j) {
-                            printf("X(%d,%d)= %f;\n", i+1,j+1,X[i*xs0+j*xs1]);
+			  Kokkos::printf("X(%d,%d)= %f;\n", i+1,j+1,X[i*xs0+j*xs1]);
                         }
                     }
+#endif
                 });
             }
         } else {
@@ -200,23 +208,27 @@ namespace KokkosBatched {
     
             if (do_print) {
                 Kokkos::single(Kokkos::PerTeam(member), [&] () {
-                    printf("m=zeros(%d,%d);\n", matrix_rank, nrhs);
+#if KOKKOS_VERSION >= 40200
+		    Kokkos::printf("m=zeros(%d,%d);\n", matrix_rank, nrhs);
                     for (int i=0; i<matrix_rank; ++i) {
                         for (int j=0; j<nrhs; ++j) {
-                            printf("m(%d,%d)= %f;\n", i+1,j+1,X[i*ws0+j]);
+		   		Kokkos::printf("m(%d,%d)= %f;\n", i+1,j+1,X[i*ws0+j]);
                         }
                     }
+#endif
                 });
             }
     
             if (do_print) {
                 Kokkos::single(Kokkos::PerTeam(member), [&] () {
-                    printf("T=zeros(%d,%d);\n", m, matrix_rank);
+#if KOKKOS_VERSION >= 40200
+		    Kokkos::printf("T=zeros(%d,%d);\n", m, matrix_rank);
                     for (int i=0; i<m; ++i) {
                         for (int j=0; j<matrix_rank; ++j) {
-                            printf("T(%d,%d)= %f;\n", i+1,j+1,T[i*ts0+j]);
+				Kokkos::printf("T(%d,%d)= %f;\n", i+1,j+1,T[i*ts0+j]);
                         }
                     }
+#endif
                 });
             }
     
@@ -232,12 +244,14 @@ namespace KokkosBatched {
     
             if (do_print) {
                 Kokkos::single(Kokkos::PerTeam(member), [&] () {
-                    printf("x=zeros(%d,%d);\n", n, nrhs);
+#if KOKKOS_VERSION >= 40200
+		    Kokkos::printf("x=zeros(%d,%d);\n", n, nrhs);
                     for (int i=0; i<n; ++i) {
                         for (int j=0; j<nrhs; ++j) {
-                            printf("x(%d,%d)= %f;\n", i+1,j+1,X[i*xs0+j*xs1]);
+			  Kokkos::printf("x(%d,%d)= %f;\n", i+1,j+1,X[i*xs0+j*xs1]);
                         }
                     }
+#endif
                 });
             }
         }
@@ -250,12 +264,14 @@ namespace KokkosBatched {
                  X, xs0, xs1);
         if (do_print) {
             Kokkos::single(Kokkos::PerTeam(member), [&] () {
-                printf("X=zeros(%d,%d);\n", n, nrhs);
+#if KOKKOS_VERSION >= 40200
+	 	Kokkos::printf("X=zeros(%d,%d);\n", n, nrhs);
                 for (int i=0; i<n; ++i) {
                     for (int j=0; j<nrhs; ++j) {
-                        printf("X(%d,%d)= %f;\n", i+1,j+1,X[i*xs0+j*xs1]);
+		    	Kokkos::printf("X(%d,%d)= %f;\n", i+1,j+1,X[i*xs0+j*xs1]);
                     }
                 }
+#endif
             });
         }
     
