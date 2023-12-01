@@ -289,10 +289,8 @@ IF (KOKKOS_HAS_TRILINOS)
     ENDFOREACH()
     SET(KOKKOSCORE_CXX_FLAGS "${KOKKOSCORE_CXX_FLAGS} ${KOKKOSCORE_CUDA_OPTIONS} ${KOKKOSCORE_CUDAFE_OPTIONS}")
   ENDIF()
-  # Both parent scope and this package
   # In ProjectCompilerPostConfig.cmake, we capture the "global" flags Trilinos wants in
   # TRILINOS_TOPLEVEL_CXX_FLAGS
-  SET(CMAKE_CXX_FLAGS "${TRILINOS_TOPLEVEL_CXX_FLAGS} ${KOKKOSCORE_CXX_FLAGS}" PARENT_SCOPE)
   SET(CMAKE_CXX_FLAGS "${TRILINOS_TOPLEVEL_CXX_FLAGS} ${KOKKOSCORE_CXX_FLAGS}")
   #CMAKE_CXX_FLAGS will get added to Kokkos and Kokkos dependencies automatically here
   #These flags get set up in KOKKOS_PACKAGE_DECL, which means they
