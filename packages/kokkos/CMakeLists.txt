@@ -248,60 +248,6 @@ ENDIF()
 
 #------------------------------------------------------------------------------
 #
-# A) Forward declare the package so that certain options are also defined for
-# subpackages
-
-## This restores the old behavior of ProjectCompilerPostConfig.cmake
-# It sets the CMAKE_CXX_FLAGS globally to those used by Kokkos
-# We must do this before KOKKOS_PACKAGE_DECL
-IF (KOKKOS_HAS_TRILINOS)
-  # Overwrite the old flags at the top-level
-  # Because Tribits doesn't use lists, it uses spaces for the list of CXX flags
-  # we have to match the annoying behavior, also we have to preserve quotes
-  # which needs another workaround.
-  SET(KOKKOS_COMPILE_OPTIONS_TMP)
-  IF (KOKKOS_ENABLE_HIP)
-    LIST(APPEND KOKKOS_COMPILE_OPTIONS ${KOKKOS_AMDGPU_OPTIONS})
-  ENDIF()
-  FOREACH(OPTION ${KOKKOS_COMPILE_OPTIONS})
-    STRING(FIND "${OPTION}" " " OPTION_HAS_WHITESPACE)
-    IF(OPTION_HAS_WHITESPACE EQUAL -1)
-      LIST(APPEND KOKKOS_COMPILE_OPTIONS_TMP "${OPTION}")
-    ELSE()
-      LIST(APPEND KOKKOS_COMPILE_OPTIONS_TMP "\"${OPTION}\"")
-    ENDIF()
-  ENDFOREACH()
-  STRING(REPLACE ";" " " KOKKOSCORE_COMPILE_OPTIONS "${KOKKOS_COMPILE_OPTIONS_TMP}")
-  LIST(APPEND KOKKOS_ALL_COMPILE_OPTIONS ${KOKKOS_COMPILE_OPTIONS})
-  IF (KOKKOS_ENABLE_CUDA)
-    LIST(APPEND KOKKOS_ALL_COMPILE_OPTIONS ${KOKKOS_CUDA_OPTIONS})
-  ENDIF()
-  FOREACH(XCOMP_FLAG ${KOKKOS_XCOMPILER_OPTIONS})
-    SET(KOKKOSCORE_XCOMPILER_OPTIONS "${KOKKOSCORE_XCOMPILER_OPTIONS} -Xcompiler ${XCOMP_FLAG}")
-    LIST(APPEND KOKKOS_ALL_COMPILE_OPTIONS -Xcompiler ${XCOMP_FLAG})
-  ENDFOREACH()
-  SET(KOKKOSCORE_CXX_FLAGS "${KOKKOSCORE_COMPILE_OPTIONS} ${KOKKOSCORE_XCOMPILER_OPTIONS}")
-  IF (KOKKOS_ENABLE_CUDA)
-    STRING(REPLACE ";" " " KOKKOSCORE_CUDA_OPTIONS    "${KOKKOS_CUDA_OPTIONS}")
-    FOREACH(CUDAFE_FLAG ${KOKKOS_CUDAFE_OPTIONS})
-      SET(KOKKOSCORE_CUDAFE_OPTIONS "${KOKKOSCORE_CUDAFE_OPTIONS} -Xcudafe ${CUDAFE_FLAG}")
-      LIST(APPEND KOKKOS_ALL_COMPILE_OPTIONS -Xcudafe ${CUDAFE_FLAG})
-    ENDFOREACH()
-    SET(KOKKOSCORE_CXX_FLAGS "${KOKKOSCORE_CXX_FLAGS} ${KOKKOSCORE_CUDA_OPTIONS} ${KOKKOSCORE_CUDAFE_OPTIONS}")
-  ENDIF()
-  # In ProjectCompilerPostConfig.cmake, we capture the "global" flags Trilinos wants in
-  # TRILINOS_TOPLEVEL_CXX_FLAGS
-  SET(CMAKE_CXX_FLAGS "${TRILINOS_TOPLEVEL_CXX_FLAGS} ${KOKKOSCORE_CXX_FLAGS}")
-  #CMAKE_CXX_FLAGS will get added to Kokkos and Kokkos dependencies automatically here
-  #These flags get set up in KOKKOS_PACKAGE_DECL, which means they
-  #must be configured before KOKKOS_PACKAGE_DECL
-  SET(KOKKOS_ALL_COMPILE_OPTIONS
-    $<$<COMPILE_LANGUAGE:CXX>:${KOKKOS_ALL_COMPILE_OPTIONS}>)
-ENDIF()
-
-
-#------------------------------------------------------------------------------
-#
 # D) Process the subpackages (subdirectories) for Kokkos
 #
 KOKKOS_PROCESS_SUBPACKAGES()
