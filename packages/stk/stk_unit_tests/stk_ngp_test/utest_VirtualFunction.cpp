@@ -73,7 +73,7 @@ struct ChildStruct : public BaseStruct {
   int i;
   virtual void set_i(const int _i) { i = _i; }
   KOKKOS_FUNCTION
-  virtual void print() { printf("Printing from child located at %p with i %i\n", static_cast<void*>(this), i); }
+  virtual void print() { Kokkos::printf("Printing from child located at %p with i %i\n", static_cast<void*>(this), i); }
 };
 
 }  // namespace ngp
