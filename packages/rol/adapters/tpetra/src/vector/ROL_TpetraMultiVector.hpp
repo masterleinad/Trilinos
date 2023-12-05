@@ -166,7 +166,7 @@ protected:
   }
 
 public:
-  virtual ~TpetraMultiVector() {}
+  //virtual ~TpetraMultiVector() {}
 
   TpetraMultiVector(const Ptr<Tpetra::MultiVector<Real,LO,GO,Node> > &tpetra_vec)
     : tpetra_vec_(tpetra_vec), map_(tpetra_vec_->getMap()), comm_(map_->getComm()) {}

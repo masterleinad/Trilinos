@@ -28,12 +28,15 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   NUM_MPI_PROCS 1
   )
 
+# FIXME_SYCL device virtual functions not supported
+IF (NOT Kokkos_ENABLE_SYCL)
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   tKokkosVirtualFunctionOnDevice
   SOURCES tKokkosVirtualFunctionOnDevice.cpp
   TESTONLYLIBS phalanx_unit_test_main phalanx_test_utilities
   NUM_MPI_PROCS 1
   )
+ENDIF()
 
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   tKokkosViewOfViews

@@ -16,8 +16,11 @@ IF(${PROJECT_NAME}_ENABLE_STKNGP_TEST)
   IF(${PROJECT_NAME}_ENABLE_STKMesh)
     STK_ADD_TEST_DIRECTORIES(stk_mesh)
   ENDIF()
-    
-  STK_ADD_TEST_DIRECTORIES(stk_ngp_test)
+   
+  #FIXME_SYCL device virtual functins not implemented
+  IF (NOT Kokkos_ENABLE_SYCL) 
+    STK_ADD_TEST_DIRECTORIES(stk_ngp_test)
+  ENDIF()
     
   IF(${PROJECT_NAME}_ENABLE_STKTopology)
     STK_ADD_TEST_DIRECTORIES(stk_topology)

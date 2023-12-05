@@ -43,28 +43,15 @@ inline std::ostream& operator<<(std::ostream& out, const Report& r) {
   return out;
 }
 
+template<class Device>
 class ReporterBase {
  public:
-  virtual ~ReporterBase() = default;
-  virtual void clear() = 0;
-  virtual void resize(int n) = 0;
-  virtual int get_capacity() const = 0;
-  virtual int report_failures(std::ostream& out = std::cout) = 0;
+  ReporterBase(int numReports) : reporter(numReports) {}
+  void clear() { reporter.clear(); }
+  void resize(int n) { reporter.resize(n); }
+  int get_capacity() const { return reporter.getCapacity(); }
 
-  NGP_TEST_FUNCTION
-  virtual void add_failure(const char* condition,
-                           const char* location) const = 0;
-};
-
-template<class Device>
-class Reporter : public ReporterBase {
- public:
-  Reporter(int numReports) : reporter(numReports) {}
-  void clear() override { reporter.clear(); }
-  void resize(int n) override { reporter.resize(n); }
-  int get_capacity() const override { return reporter.getCapacity(); }
-
-  int report_failures(std::ostream& out = std::cout) override {
+  int report_failures(std::ostream& out = std::cout) {
     int numAttemptedReports = reporter.getNumReportAttempts();
     int numReports = reporter.getNumReports();
 
@@ -87,7 +74,7 @@ class Reporter : public ReporterBase {
 
   NGP_TEST_INLINE
   void add_failure(const char* condition,
-                   const char* location) const override {
+                   const char* location) const {
     static const int dummyWorkIndex = -1;
     reporter.add_report(dummyWorkIndex, ReportT(condition, location));
   }
@@ -102,6 +89,11 @@ class Reporter : public ReporterBase {
     ss << info->test_case_name() << "." << info->name();
     return ss.str();
   }
+};
+
+template<class Device>
+class Reporter : public ReporterBase<Device> {
+  using ReporterBase<Device>::ReporterBase;
 };
 
 }
