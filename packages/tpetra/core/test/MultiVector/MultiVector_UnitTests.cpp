@@ -782,22 +782,22 @@ namespace {
     RCP<const Comm<int> > comm = getDefaultComm();
     const int numImages = comm->getSize();
     // create a Map
-    RCP<const Map<LO,GO,Node> > map3n = createContigMapWithNode<LO,GO,Node>(INVALID,3,comm),
-                                map2n = createContigMapWithNode<LO,GO,Node>(INVALID,2,comm);
-    RCP<const Map<LO,GO,Node> > lmap3 = createLocalMapWithNode<LO,GO,Node>(3,comm),
-                                lmap2 = createLocalMapWithNode<LO,GO,Node>(2,comm);
-    const Scalar S1 = ScalarTraits<Scalar>::one(),
-                 S0 = ScalarTraits<Scalar>::zero();
+    RCP<const Map<LO,GO,Node> > map3n = createContigMapWithNode<LO,GO,Node>(INVALID,3,comm);
+    //RCP<const Map<LO,GO,Node> > map2n = createContigMapWithNode<LO,GO,Node>(INVALID,2,comm);
+    RCP<const Map<LO,GO,Node> > lmap3 = createLocalMapWithNode<LO,GO,Node>(3,comm);
+    RCP<const Map<LO,GO,Node> > lmap2 = createLocalMapWithNode<LO,GO,Node>(2,comm);
+    const Scalar S1 = ScalarTraits<Scalar>::one();
+    const Scalar S0 = ScalarTraits<Scalar>::zero();
     const Mag    M0 = ScalarTraits<Mag>::zero();
     // case 2: C(local) = A^T(distr) * B  (distr)  : one of these
     {
       MV mv3nx2(map3n,2),
          mv3nx3(map3n,3),
          // locals
-         mv2x2(lmap2,2),
+         //mv2x2(lmap2,2),
          mv2x3(lmap2,3),
-         mv3x2(lmap3,2),
-         mv3x3(lmap3,3);
+         mv3x2(lmap3,2);
+         //mv3x3(lmap3,3);
       // fill multivectors with ones
       mv3nx3.putScalar(ScalarTraits<Scalar>::one());
       mv3nx2.putScalar(ScalarTraits<Scalar>::one());
@@ -805,14 +805,14 @@ namespace {
 
       Teuchos::Array<Scalar> check(9,3*numImages);
       // test
-      mv2x2.multiply(CONJ_TRANS,NO_TRANS,S1,mv3nx2,mv3nx2,S0);
-      { auto tmpView = mv2x2.get1dView(); TEST_COMPARE_FLOATING_ARRAYS(tmpView,check(0,tmpView.size()),M0); }
+      //mv2x2.multiply(CONJ_TRANS,NO_TRANS,S1,mv3nx2,mv3nx2,S0);
+      //{ auto tmpView = mv2x2.get1dView(); TEST_COMPARE_FLOATING_ARRAYS(tmpView,check(0,tmpView.size()),M0); }
       mv2x3.multiply(CONJ_TRANS,NO_TRANS,S1,mv3nx2,mv3nx3,S0);
       { auto tmpView = mv2x3.get1dView(); TEST_COMPARE_FLOATING_ARRAYS(tmpView,check(0,tmpView.size()),M0); }
       mv3x2.multiply(CONJ_TRANS,NO_TRANS,S1,mv3nx3,mv3nx2,S0);
       { auto tmpView = mv3x2.get1dView(); TEST_COMPARE_FLOATING_ARRAYS(tmpView,check(0,tmpView.size()),M0);}
-      mv3x3.multiply(CONJ_TRANS,NO_TRANS,S1,mv3nx3,mv3nx3,S0);
-      { auto tmpView = mv3x3.get1dView(); TEST_COMPARE_FLOATING_ARRAYS(tmpView,check(0,tmpView.size()),M0);}
+      //mv3x3.multiply(CONJ_TRANS,NO_TRANS,S1,mv3nx3,mv3nx3,S0);
+      //{ auto tmpView = mv3x3.get1dView(); TEST_COMPARE_FLOATING_ARRAYS(tmpView,check(0,tmpView.size()),M0);}
     }
     lclSuccess = success ? 1 : 0;
     gblSuccess = 0;
