@@ -70,7 +70,7 @@ createVectorFromCopyOf1DView (const Teuchos::RCP<const Tpetra::Map<LO, GO, NT> >
   using dual_view_type = typename Tpetra::Vector<SC, LO, GO, NT>::dual_view_type;
   using dev_memory_space = typename NT::device_type::memory_space;
 
-  dual_view_type dv ("MV::DualView", inputView.extent (0), 1);
+  dual_view_type dv ("MV::DualView5", inputView.extent (0), 1);
   dv.template modify<dev_memory_space> ();
 
   auto outputView_2d = dv.template view<dev_memory_space> ();

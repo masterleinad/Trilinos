@@ -133,7 +133,7 @@ namespace { // (anonymous)
     // argument to Kokkos::view_alloc.  This is because view_alloc
     // also allows a raw pointer as its first argument.  See
     // https://github.com/kokkos/kokkos/issues/434.
-    const std::string label ("MV::DualView");
+    const std::string label ("MV::DualView1");
     const bool debug = Behavior::debug ();
 
     // NOTE (mfh 18 Feb 2015, 12 Apr 2015, 22 Sep 2016) Our separate
@@ -250,7 +250,7 @@ namespace { // (anonymous)
     // Look carefullly at the comment in the below version of this function.
     // The comment applies here as well.
     if (X.extent (0) == 0 && X.extent (1) != 0) {
-      return WrappedDualViewType(DualViewType ("MV::DualView", 0, colRng.second - colRng.first));
+      return WrappedDualViewType(DualViewType ("MV::DualView2", 0, colRng.second - colRng.first));
     }
     else {
       return  WrappedDualViewType(X,rowRng,colRng);
@@ -274,7 +274,7 @@ namespace { // (anonymous)
     // This is not a bug in Kokkos::subview(), just some very subtle behavior which
     // future developers should be wary of.
     if (X.extent (0) == 0 && X.extent (1) != 0) {
-      return WrappedDualViewType(DualViewType ("MV::DualView", 0, colRng.second - colRng.first));
+      return WrappedDualViewType(DualViewType ("MV::DualView3", 0, colRng.second - colRng.first));
     }
     else {
       return WrappedDualViewType(X,rowRng,colRng);
